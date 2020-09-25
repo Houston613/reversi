@@ -18,10 +18,6 @@ public class MatrixForGame {
                 matrixTable[i][j] = new Unit(Unit.Color.Transparent, 5);;
         //забили углы
         //задали начальную позицию
-        matrixTable[4][3].setColor(Unit.Color.Black);
-        matrixTable[3][4].setColor(Unit.Color.Black);
-        matrixTable[3][3].setColor(Unit.Color.White);
-        matrixTable[4][4].setColor(Unit.Color.White);
     }
     //заполнили таблицу пустыми клетками и задали начальные позиции
 
