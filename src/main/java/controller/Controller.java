@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -7,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
+import model.AI;
 import model.Game;
 import model.MatrixForGame;
 import model.Unit;
@@ -18,6 +20,7 @@ import static model.MatrixForGame.matrixTable;
 
 public class Controller {
     Game game = new Game();
+    AI test = new AI();
 
     private void start(){
         MatrixForGame.fill();
@@ -33,19 +36,16 @@ public class Controller {
 
     private void setScore(){
         Score.setText(String.valueOf(game.getScore()));
-        ScoreForComp.setText(String.valueOf(game.getScoreForComp()));
-        ScoreForPlayer.setText(String.valueOf(game.getScoreForPlayer()));
+        ScoreForComp.setText(String.valueOf(game.getCountForComp()));
+        ScoreForPlayer.setText(String.valueOf(game.getCountForPlayer()));
     }
 
 
-    private final int t = 0;
-
-
     public void addUnit(int row, int column, boolean turn){
+        int t = 0;
         if (turn) {
-            if (game.checker(row, column, Unit.Color.White, t)) {
+            if (game.checker(row, column, Unit.Color.White, t, matrixTable,true)) {
                 Pane.add(new Circle(45.0, GRAY), column, row);
-                matrixTable[row][column].setColor(Unit.Color.White);
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()){
                     Pane.add(new Circle(45.0, GRAY), listOfColumn.get(0), listOfRow.get(0));
                     listOfRow.remove(0);
@@ -54,7 +54,7 @@ public class Controller {
 
             }
         }else
-            if (game.checker(row, column, Unit.Color.Black, t)) {
+            if (game.checker(row, column, Unit.Color.Black, t, matrixTable,true)) {
                 Pane.add(new Circle(45.0, BLACK),column,row);
                 matrixTable[row][column].setColor(Unit.Color.Black);
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()){
@@ -88,10 +88,7 @@ public class Controller {
     @FXML
     void initialize() {
         start();
-        addUnit(5,4,false);
-        addUnit(5,5,true);
-        addUnit(4,5,false);
-        addUnit(3,5,true);
+        
 
 
     }

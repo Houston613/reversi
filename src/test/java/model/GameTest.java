@@ -15,10 +15,10 @@ class GameTest {
         matrixTable[3][3].setColor(Unit.Color.White);
         matrixTable[4][4].setColor(Unit.Color.White);
         Game game = new Game();
-        assertFalse((game.checker(7,7, Unit.Color.Black,0)));
-        assertTrue((game.checker(5,4, Unit.Color.Black,0)));
+        assertFalse((game.checker(7,7, Unit.Color.Black,0,matrixTable, true)));
+        assertTrue((game.checker(5,4, Unit.Color.Black,0,matrixTable, true)));
         assertSame(matrixTable[4][4].getColor(), Unit.Color.Black);
-        assertTrue((game.checker(5,3, Unit.Color.White,0)));
+        assertTrue((game.checker(5,3, Unit.Color.White,0,matrixTable,true)));
         assertSame(matrixTable[4][3].getColor(), Unit.Color.White);
 
     }
