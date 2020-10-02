@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
@@ -85,9 +87,78 @@ public class Controller {
     @FXML
     private GridPane Pane;
 
+    private static final Unit UNMODUNIT = new Unit(Unit.Color.Transparent,0,-1,-1);
+
+    private Unit mouseHandler(Unit mid, double xCoord, double yCoord,int tempRow, int tempColumn) {
+        //если вышли за границы
+        if (mid.getRow() < 0 || mid.getColumn() < 0
+                || mid.getRow() > 7  || mid.getColumn() > 7) {
+            mid = UNMODUNIT;
+
+        } else {
+            Bounds bounds = Pane.getCellBounds(mid.getColumn(), mid.getRow());
+
+            //если попали в границы
+            if (xCoord > bounds.getMinX() && xCoord < bounds.getMaxX() &&
+                    yCoord > bounds.getMinY() && yCoord < bounds.getMaxY()) {
+                return mid;
+
+                //левый верхний угол
+            } else if (xCoord < bounds.getMinX() && yCoord < bounds.getMinY()) {
+                if (tempColumn==0 && tempRow==0) {
+                    tempRow++;
+                    tempColumn++;
+                }
+                mid.setRow(mid.getRow() - tempRow);
+                mid.setColumn(mid.getColumn() - tempRow);
+                mouseHandler(mid,xCoord,yCoord,tempRow-1,tempColumn-1);
+            }
+            //правый верхний угол
+            else if (xCoord > bounds.getMinX() && yCoord < bounds.getMinY()) {
+                //если у нас остались 4 клетки, то двигаться нужно иначе, что мы и задаем в if
+                //теперь нужно просто подняться на одну клетку вверх чтобы достичь правого верхнего угла
+                if (tempRow == 0)
+                    tempRow = 1;
+                mid.setRow(mid.getRow() - tempRow);
+                mid.setColumn(mid.getColumn() + tempColumn);
+                mouseHandler(mid, xCoord, yCoord, tempRow - 1,tempColumn-1);
+
+            }
+            //левый нижний угол
+            else if (xCoord < bounds.getMinX() && yCoord > bounds.getMinY()) {
+                //если у нас остались 4 клетки, то двигаться нужно иначе, что мы и задаем в if
+                //теперь нужно просто сдвинуться на одну клетку влево чтобы достичь левого нижнего угла
+                if (tempColumn == 0)
+                    tempColumn = 1;
+                mid.setRow(mid.getRow() + tempRow);
+                mid.setColumn(mid.getColumn() - tempColumn);
+                mouseHandler(mid,xCoord,yCoord,tempRow-1,tempColumn-1);
+            }
+            //правый нижний угол
+            else if (xCoord > bounds.getMinX() && yCoord > bounds.getMinY()) {
+                //если у нас остались 4 клетки, то двигаться нужно иначе, что мы и задаем в if
+                //теперь нужно ничего не делать, уже должны выйти
+                mid.setRow(mid.getRow() + tempRow);
+                mid.setColumn(mid.getColumn() + tempColumn);
+                mouseHandler(mid,xCoord,yCoord,tempRow-1,tempColumn-1);
+            }
+        }
+        return mid;
+    }
+
+
     @FXML
     void initialize() {
         start();
+        Pane.setOnMouseClicked(event -> {
+            Unit result;
+            Unit mid = new Unit(matrixTable[4][4].getColor(),matrixTable[4][4].getScore(),4,4);
+            double xCoord = event.getSceneX();
+            double yCoord = event.getSceneY();
+            result = mouseHandler(mid,xCoord,yCoord,2,2);
+            System.out.println(result.getRow());
+            System.out.println(result.getColumn());
+        });
         
 
 
