@@ -1,15 +1,18 @@
 package model;
+import controller.Controller;
+
 import java.util.ArrayList;
+
+import static controller.Controller.*;
+import static model.MatrixForGame.matrixTable;
 
 public class AI {
     private Unit[][] matrixTableAI = MatrixForGame.matrixTable;
-    Game game = new Game();
+    //создаем игру с копией рабочего поля
     Unit result;
-    private int bestForComp = -1;
-    private int bestForPlayer = 100;
 
 
-    private ArrayList<Unit> findAllMoves(Unit[][] currentTable, Unit.Color color){
+    private ArrayList<Unit> findAllMoves(Game game, Unit.Color color){
         ArrayList<Unit> allMoves = new ArrayList<>();
         //тк методы Checker и Changer изменяют значения очков,
         // надо вернуть их в первоначальное состояние после того как найдем все ходы
@@ -22,8 +25,9 @@ public class AI {
         for (int i = 0; i<=7; i++)
             for (int j = 0; j<=7; j++)
                 //если ход валидный, добавляем в пул возможных ходов
-                if (game.checker(i,j,color,0,currentTable,false)){
-                    allMoves.add(currentTable[i][j]);
+                if (game.checker(i,j,color,0, game.getTable(), false)){
+                    game.getTable()[i][j].setColor(color);
+                    allMoves.add(game.getTable()[i][j]);
                 }
 
         game.setScore(tempScore);
@@ -35,30 +39,68 @@ public class AI {
         return allMoves;
     }
 
-    /*public Unit algorithm(Unit[][] table, Unit.Color color, int deep){
+    /**
+     *
+     * @param game - игровое поле, с которым работаем в данный момент
+     * @param color - цвет
+     * @param deep - глубина, которой уже достингли
+     * @param alpha - максимальное значение для компа, меньше которого никогда не выбирать
+     * @param beta - минимальное значение для игрока, больше которого не будет выбрано
+     * @return
+     */
+    public Unit algorithm(Game game, Unit.Color color, int deep, int alpha, int beta){
+        alpha = -1;
+        beta = 100;
+        Unit bestMove;
+        //макс глубина
         if (deep==4)
-            if (color== Unit.Color.Black) {
-                return new Unit(color, game.getScoreForComp(), -1, -1);
-            }else if (color== Unit.Color.White)
-                return new Unit(color, game.getScoreForPlayer(), -1, -1);
+            return Controller.UNMODUNIT;
 
-        ArrayList<Unit> moves = findAllMoves(table,color);
+
+        ArrayList<Unit> moves = findAllMoves(game,color);
         deep++;
-        //
+        //создаем стол до изменений
+        Game gamePreTurn = new Game(game.getScore(), game.getCountForPlayer(), game.getCountForComp(),
+                game.getScoreForPlayer(), game.getScoreForComp(), game.getTable());
+        int best = 0;
         for (Unit move:moves){
-            //добавляем фигуру на поле, счет позволяем изменять
-            game.checker(move.getRow(),move.getColumn(),color,0,table,true);
-            //персистентные струуктры данных
-            if (color== Unit.Color.Black) {
+
+            game.checker(move.getRow(),move.getColumn(),color,0, game.getTable(), true);
+
+
+            //нужны персистентные струуктры данных
+
+
+            if (color == Unit.Color.Black) {
                 color = Unit.Color.White;
             }
-            else if (color== Unit.Color.White){
+            else if (color == Unit.Color.White){
                 color = Unit.Color.Black;
             }
-            result = algorithm(table,color,deep);
 
+            result = algorithm(game,color,deep,alpha,beta);
+
+            //!!!закоментить!!!!
+            int checkpointScoreComp = game.getScoreForComp()+ game.getCountForComp();
+            int checkpointScorePlayer = game.getScoreForPlayer()+ game.getCountForPlayer();
+            if (checkpointScoreComp>alpha)
+                alpha=checkpointScoreComp;
+            if (checkpointScorePlayer<beta)
+                beta=checkpointScorePlayer;
+            if (beta>alpha)
+                break;
+
+            //если достигли глубины
+            if (result == Controller.UNMODUNIT && checkpointScoreComp>best)
+                best = checkpointScoreComp;
         }
-
+        //возвращаем старое положение до хода
+        game.setScore(gamePreTurn.getScore());
+        game.setCountForPlayer(gamePreTurn.getCountForPlayer());
+        game.setCountForComp(gamePreTurn.getCountForPlayer());
+        game.setScoreForPlayer(gamePreTurn.getScoreForPlayer());
+        game.setScoreForComp(best);
+        game.setTable(gamePreTurn.getTable());
+        return result;
     }
-     */
 }

@@ -1,40 +1,53 @@
 package model;
 
 import java.util.ArrayList;
-import static model.MatrixForGame.matrixTable;
 
 public class Game {
     //поменять на один лист Unit
     public static ArrayList<Integer> listOfRow = new ArrayList<>();
     public static ArrayList<Integer> listOfColumn = new ArrayList<>();
 
+
+    public Game(int score, int countForPlayer, int countForComp, int scoreForPlayer, int scoreForComp, Unit[][] table) {
+        this.score = score;
+        this.countForPlayer = countForPlayer;
+        this.countForComp = countForComp;
+        this.scoreForPlayer = scoreForPlayer;
+        this.scoreForComp = scoreForComp;
+        this.table = table;
+
+    }
+    private Unit[][] table;
+
+    public Unit[][] getTable() { return table; }
+    public void setTable(Unit[][] table) { this.table = table; }
+    //таблица в которой изменения происходят в данный момент
+
     //количество оставшихся ходов
-    private int score = 60;
+    private int score;
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
 
     //кол-во фишек игрока
-    private int countForPlayer = 2;
+    private int countForPlayer;
     public int getCountForPlayer() { return countForPlayer; }
     public void setCountForPlayer(int countForPlayer) { this.countForPlayer = countForPlayer; }
 
-
-    //кол-во фищек компа
-    private int countForComp = 2;
+    //кол-во фишек компа
+    private int countForComp;
     public int getCountForComp() { return countForComp; }
     public void setCountForComp(int countForComp) { this.countForComp = countForComp; }
 
-    //очки компа
-    private int scoreForComp = 2;
-    public int getScoreForComp() { return scoreForComp; }
-    public void setScoreForComp(int scoreForComp) { this.scoreForComp = scoreForComp; }
-
-
     //очки игрока
-    private int scoreForPlayer = 2;
+    private int scoreForPlayer;
     public int getScoreForPlayer() { return scoreForPlayer; }
     public void setScoreForPlayer(int scoreForPlayer) { this.scoreForPlayer = scoreForPlayer; }
 
+
+    //очки компа
+    private int scoreForComp;
+    public int getScoreForComp() { return scoreForComp; }
+    public void setScoreForComp(int scoreForComp) { this.scoreForComp = scoreForComp; }
 
     public enum Line{
         horizontalRight(0,1),horizontalLeft(0,-1),down(1,0),up(-1,0),
@@ -45,8 +58,6 @@ public class Game {
             this.h = h;
             this.w = w;
         }
-        private int h() { return h; }
-        private int w() { return w; }
     }
 
     private void changer(int row, int column, int currentRow, int currentColumn, Unit.Color color, int t, Unit[][] table,
@@ -149,7 +160,7 @@ public class Game {
                         countForPlayer++;
                     }
                     if (change) {
-                        matrixTable[row][column].setColor(color);
+                        table[row][column].setColor(color);
                     }
                     return true;
                 }
@@ -163,6 +174,8 @@ public class Game {
                     currentRow+= k.h;
                     currentColumn+= k.w;
                 }
+                if (table[currentRow][currentColumn].getColor() == color && !enemyUnit)
+                    break;
 
             }
             //если закончились направления

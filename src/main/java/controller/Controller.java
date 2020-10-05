@@ -21,7 +21,14 @@ import static model.Game.listOfRow;
 import static model.MatrixForGame.matrixTable;
 
 public class Controller {
-    Game game = new Game();
+    //начальные данные
+    public static final int SCORE = 60;
+    public static final int COUNT_FOR_PLAYER = 2;
+    public static final int COUNT_FOR_COMP = 2;
+    public static final int SCORE_FOR_PLAYER = 2;
+    public static final int SCORE_FOR_COMP = 2;
+
+    Game game = new Game(SCORE, COUNT_FOR_PLAYER, COUNT_FOR_COMP, SCORE_FOR_PLAYER, SCORE_FOR_COMP,matrixTable);
     AI test = new AI();
 
     private void start(){
@@ -87,7 +94,7 @@ public class Controller {
     @FXML
     private GridPane Pane;
 
-    private static final Unit UNMODUNIT = new Unit(Unit.Color.Transparent,0,-1,-1);
+    public static final Unit UNMODUNIT = new Unit(Unit.Color.Transparent,0,-1,-1);
 
     private Unit mouseHandler(Unit mid, double xCoord, double yCoord,int tempRow, int tempColumn) {
         //если вышли за границы
