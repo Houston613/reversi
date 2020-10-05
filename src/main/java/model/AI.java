@@ -7,7 +7,6 @@ import static controller.Controller.*;
 import static model.MatrixForGame.matrixTable;
 
 public class AI {
-    private Unit[][] matrixTableAI = MatrixForGame.matrixTable;
     //создаем игру с копией рабочего поля
     Unit result;
 
@@ -49,9 +48,10 @@ public class AI {
      * @return
      */
     public Unit algorithm(Game game, Unit.Color color, int deep, int alpha, int beta){
+
         alpha = -1;
         beta = 100;
-        Unit bestMove;
+
         //макс глубина
         if (deep==4)
             return Controller.UNMODUNIT;
@@ -60,15 +60,18 @@ public class AI {
         ArrayList<Unit> moves = findAllMoves(game,color);
         deep++;
         //создаем стол до изменений
+        int best = 0;
         Game gamePreTurn = new Game(game.getScore(), game.getCountForPlayer(), game.getCountForComp(),
                 game.getScoreForPlayer(), game.getScoreForComp(), game.getTable());
-        int best = 0;
+
         for (Unit move:moves){
+            gamePreTurn = new Game(game.getScore(), game.getCountForPlayer(), game.getCountForComp(),
+                    game.getScoreForPlayer(), game.getScoreForComp(), game.getTable());
 
             game.checker(move.getRow(),move.getColumn(),color,0, game.getTable(), true);
 
 
-            //нужны персистентные струуктры данных
+            //нужны персистентные структры данных
 
 
             if (color == Unit.Color.Black) {
@@ -80,15 +83,20 @@ public class AI {
 
             result = algorithm(game,color,deep,alpha,beta);
 
-            //!!!закоментить!!!!
+            //!!!!закоментить!!!!
             int checkpointScoreComp = game.getScoreForComp()+ game.getCountForComp();
             int checkpointScorePlayer = game.getScoreForPlayer()+ game.getCountForPlayer();
+
             if (checkpointScoreComp>alpha)
                 alpha=checkpointScoreComp;
+
             if (checkpointScorePlayer<beta)
                 beta=checkpointScorePlayer;
-            if (beta>alpha)
+
+            if (beta>alpha){
+                //завершаем просмотр этой ветки
                 break;
+            }
 
             //если достигли глубины
             if (result == Controller.UNMODUNIT && checkpointScoreComp>best)

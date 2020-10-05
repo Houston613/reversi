@@ -163,7 +163,9 @@ public class Game {
                         table[row][column].setColor(color);
                     }
                     return true;
-                }
+                    //если наткнулись на свою же фишку, то в этом направлении не ищем
+                }else if (!enemyUnit && table[currentRow][currentColumn].getColor() == color)
+                    break;
 
 
                 //если нашли вражеский юнит, то запускаем с поиском в том же направлении
@@ -174,9 +176,6 @@ public class Game {
                     currentRow+= k.h;
                     currentColumn+= k.w;
                 }
-                if (table[currentRow][currentColumn].getColor() == color && !enemyUnit)
-                    break;
-
             }
             //если закончились направления
             if (temp==8)
