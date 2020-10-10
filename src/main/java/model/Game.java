@@ -6,7 +6,7 @@ public class Game {
     //поменять на один лист Unit
     public static ArrayList<Integer> listOfRow = new ArrayList<>();
     public static ArrayList<Integer> listOfColumn = new ArrayList<>();
-
+    public Renderer renderer = new Renderer();
 
     public Game(int score, int countForPlayer, int countForComp, int scoreForPlayer, int scoreForComp, Unit[][] table) {
         this.score = score;
@@ -17,10 +17,34 @@ public class Game {
         this.table = table;
 
     }
+
     private Unit[][] table;
 
-    public Unit[][] getTable() { return table; }
-    public void setTable(Unit[][] table) { this.table = table; }
+    public Unit[][] getTable(boolean needNew) {
+        if (needNew) {
+            Unit[][] tempTable = new Unit[8][8];
+            for (int i = 0; i <= 7; i++)
+                for (int j = 0; j <= 7; j++)
+                    tempTable[i][j] = new Unit(table[i][j].getColor(), table[i][j].getScore(),
+                            table[i][j].getColumn(), table[i][j].getRow());
+            return tempTable;
+        }
+        else return table;
+    }
+
+
+    public void setTable(Unit[][] tableSet, boolean needNew) {
+        if (needNew) {
+            Unit[][] tempTable = new Unit[8][8];
+            for (int i = 0; i <= 7; i++)
+                for (int j = 0; j <= 7; j++)
+                    tempTable[i][j] = new Unit(tableSet[i][j].getColor(), tableSet[i][j].getScore(),
+                            tableSet[i][j].getColumn(), tableSet[i][j].getRow());
+            //заполнили все кроме углов которые ии будет пытаться забрать
+            this.table = tempTable;
+        }
+        else this.table = tableSet;
+    }
     //таблица в которой изменения происходят в данный момент
 
     //количество оставшихся ходов
@@ -60,11 +84,11 @@ public class Game {
         }
     }
 
-    private void changer(int row, int column, int currentRow, int currentColumn, Unit.Color color, int t, Unit[][] table,
+    private void changer(int column, int row, int currentColumn, int currentRow, Unit.Color color, int t, Unit[][] table,
                          boolean change){
         //Содержат координаты точек, цвет unit'a которых нужно изменить
-        listOfRow.clear();
         listOfColumn.clear();
+        listOfRow.clear();
 
 
         //в enum Line противоположные направления разбиты по парам
@@ -80,28 +104,29 @@ public class Game {
         currentRow+= m.h;
         currentColumn+=m.w;
 
-        while (currentRow!=row || currentColumn!=column) {
+        while (currentColumn!=column || currentRow!=row) {
 
             if (color == Unit.Color.Black) {
+
                 //изменяем счет в пользу компьютера если наш основой цвет - черный
                 countForComp++;
                 countForPlayer--;
 
-                scoreForPlayer-=table[currentRow][currentColumn].getScore();
-                scoreForComp+=table[currentRow][currentColumn].getScore();
+                scoreForPlayer-=table[currentColumn][currentRow].getScore();
+                scoreForComp+=table[currentColumn][currentRow].getScore();
 
             }else {
                 countForComp--;
                 countForPlayer++;
 
-                scoreForPlayer+=table[currentRow][currentColumn].getScore();
-                scoreForComp-=table[currentRow][currentColumn].getScore();
+                scoreForPlayer+=table[currentColumn][currentRow].getScore();
+                scoreForComp-=table[currentColumn][currentRow].getScore();
             }
-            listOfRow.add(currentRow);
             listOfColumn.add(currentColumn);
+            listOfRow.add(currentRow);
             //если используется не только для подсчета, то меняем цвет у пройденных фишек
             if (change) {
-                table[currentRow][currentColumn].setColor(color);
+                table[currentColumn][currentRow].setColor(color);
             }
             currentRow+= m.h;
             currentColumn+=m.w;
@@ -123,7 +148,7 @@ public class Game {
      *          если нужно только провести расчет
      */
 
-    public boolean checker(int row, int column, Unit.Color color, int t, Unit[][] table, boolean change){
+    public boolean checker(int column, int row, Unit.Color color, int t, Unit[][] table, boolean change){
 
         int temp = t+1;
 
@@ -131,47 +156,49 @@ public class Game {
         Line k = l[t];
 
         //текущие положения точки
-        int currentRow;
         int currentColumn;
+        int currentRow;
 
         //для вражеской фишки
         boolean enemyUnit = false;
 
-        if (table[row][column].getColor() == Unit.Color.Transparent) {
+        if (table[column][row].getColor() == Unit.Color.Transparent) {
 
             //начинаем с шага в опр. сторону
             currentRow = row + k.h;
             currentColumn = column + k.w;
 
             //если не вышли за поле
-            while (currentRow >= 0 && currentRow <= 7 && currentColumn >= 0 && currentColumn <= 7 &&
-                    (table[currentRow][currentColumn].getColor() != Unit.Color.Transparent) ) {
+            while (currentColumn >= 0 && currentColumn <= 7 && currentRow >= 0 && currentRow <= 7 &&
+                    (table[currentColumn][currentRow].getColor() != Unit.Color.Transparent) ) {
 
                 //если был найден вражеский unit и далее есть unit нашего цвета, то ход валидный,
                 // рекурсия заканчивается
-                if (enemyUnit && table[currentRow][currentColumn].getColor() == color) {
+                if (enemyUnit && table[currentColumn][currentRow].getColor() == color) {
                     //меняем цвет всех фишек, что мы прошли
-                    changer(row,column,currentRow,currentColumn,color,t,table, change);
+                    changer(column,row,currentColumn,currentRow,color,t,table, change);
                     score--;
                     if (color == Unit.Color.Black) {
                         //изменяем счет в пользу компьютера если наш основой цвет - черный
                         countForComp++;
+                        scoreForComp+=table[currentColumn][currentRow].getScore();
                     }else {
                         countForPlayer++;
+                        scoreForPlayer+=table[currentColumn][currentRow].getScore();
                     }
                     if (change) {
-                        table[row][column].setColor(color);
+                        table[column][row].setColor(color);
                     }
                     return true;
                     //если наткнулись на свою же фишку, то в этом направлении не ищем
-                }else if (!enemyUnit && table[currentRow][currentColumn].getColor() == color)
+                }else if (!enemyUnit && table[currentColumn][currentRow].getColor() == color)
                     break;
 
 
                 //если нашли вражеский юнит, то запускаем с поиском в том же направлении
                 //поэтому вместо temp  используем t
                 //вместо row column используем текущие
-                if (table[currentRow][currentColumn].getColor() != color) {
+                if (table[currentColumn][currentRow].getColor() != color) {
                     enemyUnit = true;
                     currentRow+= k.h;
                     currentColumn+= k.w;
@@ -181,7 +208,7 @@ public class Game {
             if (temp==8)
                 return false;
             //меняем направление поиска
-            return checker(row, column, color, temp,table, change);
+            return checker(column, row, color, temp,table, change);
         }
         //если клетка не пустая, ход не валидный
         return false;

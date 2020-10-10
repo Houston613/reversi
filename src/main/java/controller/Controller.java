@@ -6,14 +6,10 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
-import model.AI;
-import model.Game;
-import model.MatrixForGame;
-import model.Unit;
+import model.*;
 
 import static javafx.scene.paint.Color.*;
 import static model.Game.listOfColumn;
@@ -27,20 +23,24 @@ public class Controller {
     public static final int COUNT_FOR_COMP = 2;
     public static final int SCORE_FOR_PLAYER = 2;
     public static final int SCORE_FOR_COMP = 2;
-
+    private boolean turn = true;
     Game game = new Game(SCORE, COUNT_FOR_PLAYER, COUNT_FOR_COMP, SCORE_FOR_PLAYER, SCORE_FOR_COMP,matrixTable);
     AI test = new AI();
 
+    private void changeTurn(){
+        turn=!turn;
+    }
+    public Renderer renderer = new Renderer();
     private void start(){
         MatrixForGame.fill();
         Pane.add(new Circle(45.0, BLACK),4,3);
         Pane.add(new Circle(45.0, BLACK),3,4);
         Pane.add(new Circle(45.0, GRAY),3,3);
         Pane.add(new Circle(45.0, GRAY),4,4);
-        matrixTable[4][3].setColor(Unit.Color.Black);
-        matrixTable[3][4].setColor(Unit.Color.Black);
-        matrixTable[3][3].setColor(Unit.Color.White);
-        matrixTable[4][4].setColor(Unit.Color.White);
+        game.getTable(false)[4][3].setColor(Unit.Color.Black);
+        game.getTable(false)[3][4].setColor(Unit.Color.Black);
+        game.getTable(false)[3][3].setColor(Unit.Color.White);
+        game.getTable(false)[4][4].setColor(Unit.Color.White);
     }
 
     private void setScore(){
@@ -49,12 +49,12 @@ public class Controller {
         ScoreForPlayer.setText(String.valueOf(game.getCountForPlayer()));
     }
 
-
-    public void addUnit(int row, int column, boolean turn){
+    public void addUnit(int column, int row, boolean turn){
         int t = 0;
         if (turn) {
-            if (game.checker(row, column, Unit.Color.White, t, matrixTable,true)) {
+            if (game.checker(column, row, Unit.Color.White, t, game.getTable(false), true)) {
                 Pane.add(new Circle(45.0, GRAY), column, row);
+                game.getTable(false)[column][row].setColor(Unit.Color.White);
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()){
                     Pane.add(new Circle(45.0, GRAY), listOfColumn.get(0), listOfRow.get(0));
                     listOfRow.remove(0);
@@ -63,16 +63,18 @@ public class Controller {
 
             }
         }else
-            if (game.checker(row, column, Unit.Color.Black, t, matrixTable,true)) {
+            if (game.checker(column, row, Unit.Color.Black, t, game.getTable(false),true)) {
                 Pane.add(new Circle(45.0, BLACK),column,row);
-                matrixTable[row][column].setColor(Unit.Color.Black);
+                game.getTable(false)[column][row].setColor(Unit.Color.Black);
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()){
                     Pane.add(new Circle(45.0, BLACK), listOfColumn.get(0), listOfRow.get(0));
                     listOfRow.remove(0);
                     listOfColumn.remove(0);
                 }
             }
+
             setScore();
+            changeTurn();
 
     }
 
@@ -159,12 +161,16 @@ public class Controller {
         start();
         Pane.setOnMouseClicked(event -> {
             Unit result;
-            Unit mid = new Unit(matrixTable[4][4].getColor(),matrixTable[4][4].getScore(),4,4);
+            Unit mid = new Unit(game.getTable(false)[4][4].getColor(),game.getTable(false)[4][4].getScore(),4,4);
             double xCoord = event.getSceneX();
             double yCoord = event.getSceneY();
             result = mouseHandler(mid,xCoord,yCoord,2,2);
             System.out.println(result.getRow());
             System.out.println(result.getColumn());
+            addUnit(result.getColumn(),result.getRow(),turn);
+            result = test.algorithm(game, Unit.Color.Black,0,-1,100);
+            addUnit(result.getColumn(),result.getRow(),turn);
+            test.setToDefault();
         });
         
 

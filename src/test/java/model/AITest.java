@@ -12,6 +12,7 @@ class AITest {
     void algorithm() {
         AI ai = new AI();
         MatrixForGame.fill();
+        Renderer renderer = new Renderer();
         matrixTable[4][3].setColor(Unit.Color.Black);
         matrixTable[3][4].setColor(Unit.Color.Black);
         matrixTable[3][3].setColor(Unit.Color.White);

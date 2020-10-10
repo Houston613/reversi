@@ -2,11 +2,11 @@ package model;
 //класс для клеток, которые далее заполнят матрицу/игровой стол
 public class Unit {
 
-    public Unit(Color color, int score, int row, int column) {
+    public Unit(Color color, int score, int column, int row) {
         this.color = color;
         this.score = score;
-        this.row = row;
         this.column = column;
+        this.row = row;
     }
 
     public enum Color {
@@ -22,14 +22,13 @@ public class Unit {
     public Color getColor() { return color; }
     public void setColor(Color color) { this.color = color; }
 
-    private int row;
-    public int getRow() { return row; }
-    public void setRow(int row) { this.row = row; }
-
-
     private int column;
     public int getColumn() { return column; }
     public void setColumn(int column) { this.column = column; }
+
+    private int row;
+    public int getRow() { return row; }
+    public void setRow(int row) { this.row = row; }
 
 
 
