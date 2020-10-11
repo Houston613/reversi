@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Renderer {
+    //класс watcher, рисующий таблицу игрового поля
     public BufferedImage render(Unit[][] table){
         BufferedImage img =  new BufferedImage(8,8,BufferedImage.TYPE_INT_RGB);
         Graphics graphics = img.getGraphics();

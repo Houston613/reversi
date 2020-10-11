@@ -23,6 +23,7 @@ public class Controller {
     public static final int COUNT_FOR_COMP = 2;
     public static final int SCORE_FOR_PLAYER = 2;
     public static final int SCORE_FOR_COMP = 2;
+    //true - ход белых. false - черные
     private boolean turn = true;
     Game game = new Game(SCORE, COUNT_FOR_PLAYER, COUNT_FOR_COMP, SCORE_FOR_PLAYER, SCORE_FOR_COMP,matrixTable);
     AI test = new AI();
@@ -32,11 +33,14 @@ public class Controller {
     }
     public Renderer renderer = new Renderer();
     private void start(){
+        //заполняем первоначальную таблицу пустыми клетками
         MatrixForGame.fill();
+        //рисуем начальную позицию
         Pane.add(new Circle(45.0, BLACK),4,3);
         Pane.add(new Circle(45.0, BLACK),3,4);
         Pane.add(new Circle(45.0, GRAY),3,3);
         Pane.add(new Circle(45.0, GRAY),4,4);
+        //меняем цвет у первоначльных клеток
         game.getTable(false)[4][3].setColor(Unit.Color.Black);
         game.getTable(false)[3][4].setColor(Unit.Color.Black);
         game.getTable(false)[3][3].setColor(Unit.Color.White);
@@ -44,6 +48,7 @@ public class Controller {
     }
 
     private void setScore(){
+        //выводит счет на экран
         Score.setText(String.valueOf(game.getScore()));
         ScoreForComp.setText(String.valueOf(game.getCountForComp()));
         ScoreForPlayer.setText(String.valueOf(game.getCountForPlayer()));
@@ -55,8 +60,11 @@ public class Controller {
             if (game.checker(column, row, Unit.Color.White, t, game.getTable(false), true)) {
                 Pane.add(new Circle(45.0, GRAY), column, row);
                 game.getTable(false)[column][row].setColor(Unit.Color.White);
+                //checker сам меняет цвет вражеских фишек,
+                // поэтому нам нужно пройтись по списку который заполнеяет changer и нарисовать нужные unit'ы
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()){
                     Pane.add(new Circle(45.0, GRAY), listOfColumn.get(0), listOfRow.get(0));
+                    //удаляем первый элемент,тк его уже нарисовали
                     listOfRow.remove(0);
                     listOfColumn.remove(0);
                 }
@@ -72,8 +80,9 @@ public class Controller {
                     listOfColumn.remove(0);
                 }
             }
-
+            //показываем счет на экран
             setScore();
+            //меняем ход
             changeTurn();
 
     }
