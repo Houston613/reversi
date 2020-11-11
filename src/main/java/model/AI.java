@@ -27,7 +27,7 @@ public class AI {
      * @param color - цвет, для коотрого ишем возможные ходы
      * @return - массив всех возможных ходов
      */
-    private ArrayList<Unit> findAllMoves(Game game, Unit.Color color){
+    public ArrayList<Unit> findAllMoves(Game game, Unit.Color color){
         ArrayList<Unit> allMoves = new ArrayList<>();
         //тк методы Checker и Changer изменяют значения очков,
         // надо вернуть их в первоначальное состояние после того как найдем все ходы
@@ -79,7 +79,7 @@ public class AI {
      */
 
     public Unit algorithm(Game game, Unit.Color color, int deep, int alpha, int beta){
-        if (deep==3)
+        if (deep==5)
             //если достигли максимальной глубины, выходим из итерации и
             // передаем результат, показывающий что достигли максимальной глубины
             return Controller.UNMODUNIT;

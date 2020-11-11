@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="844.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <HBox layoutX="10.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0">
+      <HBox layoutX="10.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
          <children>
             <Label fx:id="ScoreForPlayer" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>
@@ -18,7 +18,7 @@
                </HBox.margin>
             </Label>
          </children></HBox>
-      <HBox layoutX="619.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0">
+      <HBox layoutX="619.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
          <children>
             <Label fx:id="ScoreForComp" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>
@@ -26,7 +26,7 @@
                </HBox.margin>
             </Label>
          </children></HBox>
-      <HBox layoutX="315.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0">
+      <HBox layoutX="315.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
          <children>
             <Label fx:id="Score" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>
@@ -34,7 +34,7 @@
                </HBox.margin>
             </Label>
          </children></HBox>
-      <GridPane fx:id="Pane" focusTraversable="true" gridLinesVisible="true" layoutX="10.0" layoutY="10.0" prefHeight="768.0" prefWidth="809.0">
+      <GridPane fx:id="Pane" focusTraversable="true" gridLinesVisible="true" layoutX="10.0" layoutY="10.0" prefHeight="768.0" prefWidth="809.0" AnchorPane.bottomAnchor="66.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="10.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
