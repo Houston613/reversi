@@ -10,7 +10,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="844.0" prefWidth="847.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <children>
-      <HBox layoutX="10.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
+      <HBox layoutX="14.0" layoutY="782.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="14.0">
          <children>
             <Label fx:id="ScoreForPlayer" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>
@@ -18,7 +18,7 @@
                </HBox.margin>
             </Label>
          </children></HBox>
-      <HBox layoutX="619.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
+      <HBox layoutX="633.0" layoutY="782.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="14.0">
          <children>
             <Label fx:id="ScoreForComp" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>
@@ -26,7 +26,7 @@
                </HBox.margin>
             </Label>
          </children></HBox>
-      <HBox layoutX="315.0" layoutY="778.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="637.0" AnchorPane.topAnchor="778.0">
+      <HBox layoutX="315.0" layoutY="782.0" prefHeight="48.0" prefWidth="200.0" AnchorPane.bottomAnchor="14.0">
          <children>
             <Label fx:id="Score" prefHeight="26.0" prefWidth="45.0">
                <HBox.margin>

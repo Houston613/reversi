@@ -19,7 +19,7 @@ public class MatrixForGame {
                 matrixTable[i][j].setScore(-1);
 
         for (int i = 0; i <= 7; i = i+7)
-            for (int j = 1; j <= 7; j = j+7)
+            for (int j = 0; j <= 7; j = j+7)
                 matrixTable[i][j].setScore(10);
 
         for (int i = 1; i <= 6; i = i+5)

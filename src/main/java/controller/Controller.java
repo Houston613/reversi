@@ -1,12 +1,12 @@
 package controller;
 
-import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -49,6 +49,9 @@ public class Controller {
         game.getTable(false)[3][4].setColor(Unit.Color.Black);
         game.getTable(false)[3][3].setColor(Unit.Color.White);
         game.getTable(false)[4][4].setColor(Unit.Color.White);
+        Score.setText(String.valueOf(SCORE));
+        ScoreForComp.setText(String.valueOf(SCORE_FOR_COMP));
+        ScoreForPlayer.setText(String.valueOf(SCORE_FOR_PLAYER));
     }
 
     private void setScore() {
@@ -197,7 +200,6 @@ public class Controller {
         start();
         illuminate();
         Pane.setOnMouseClicked(event -> {
-
             Unit result;
             Unit mid = new Unit(game.getTable(false)[4][4].getColor(), game.getTable(false)[4][4].getScore(), 4, 4);
             double xCoord = event.getSceneX();
@@ -207,14 +209,20 @@ public class Controller {
                 blur();
                 addUnit(result.getColumn(), result.getRow(), turn);
                 result = test.algorithm(game, Unit.Color.Black, 0, -1, 100);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information Dialog");
-                alert.setHeaderText(null);
-                alert.setContentText("I have a great message for you!");
-                alert.showAndWait();
-                addUnit(result.getColumn(), result.getRow(), turn);
-                test.setToDefault();
-                illuminate();
+                if (result != null) {
+                    addUnit(result.getColumn(), result.getRow(), turn);
+                    test.setToDefault();
+                    illuminate();
+                }else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Game is End");
+                    if (game.getCountForPlayer()>=game.getCountForComp())
+                        alert.setHeaderText("You win");
+                    else
+                        alert.setHeaderText("You lose");
+                    alert.setContentText("Your Score:"+game.getCountForPlayer()+"\nComp Score:"+game.getCountForComp());
+                    alert.showAndWait();
+                }
             }
         });
 
