@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -34,7 +35,6 @@ public class Controller {
         turn = !turn;
     }
 
-    public Renderer renderer = new Renderer();
 
     private void start() {
         //заполняем первоначальную таблицу пустыми клетками

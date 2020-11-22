@@ -18,7 +18,6 @@ public class AI {
         best=0;
         result = null;
     }
-    public Renderer renderer = new Renderer();
 
 
     /**
@@ -79,7 +78,7 @@ public class AI {
      */
 
     public Unit algorithm(Game game, Unit.Color color, int deep, int alpha, int beta){
-        if (deep==5)
+        if (deep==3)
             //если достигли максимальной глубины, выходим из итерации и
             // передаем результат, показывающий что достигли максимальной глубины
             return Controller.UNMODUNIT;
@@ -101,7 +100,6 @@ public class AI {
             tempResult = algorithm(game, Unit.Color.White,deep,alpha,beta);
             else tempResult = algorithm(game, Unit.Color.Black,deep,alpha,beta);
 
-            //!!!!закоментить!!!!
             int checkpointScoreComp = game.getScoreForComp() + game.getCountForComp();
             int checkpointScorePlayer = game.getScoreForPlayer() + game.getCountForPlayer();
 

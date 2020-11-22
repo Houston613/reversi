@@ -6,7 +6,6 @@ public class Game {
     //поменять на один лист Unit
     public static ArrayList<Integer> listOfRow = new ArrayList<>();
     public static ArrayList<Integer> listOfColumn = new ArrayList<>();
-    public Renderer renderer = new Renderer();
 
     public Game(int score, int countForPlayer, int countForComp, int scoreForPlayer, int scoreForComp, Unit[][] table) {
         this.score = score;
