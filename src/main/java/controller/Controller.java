@@ -1,18 +1,21 @@
 package controller;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
-
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.shape.Circle;
-import model.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
+import model.AI;
+import model.Game;
+import model.MatrixForGame;
+import model.Unit;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import static javafx.scene.paint.Color.*;
 import static model.Game.listOfColumn;
@@ -35,15 +38,32 @@ public class Controller {
         turn = !turn;
     }
 
+    private Ellipse createFigure(Color color){
 
+        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
+                System.out.println("Height: " + Pane.getHeight() + " Width: " + Pane.getWidth());
+        Pane.widthProperty().addListener(stageSizeListener);
+        Pane.heightProperty().addListener(stageSizeListener);
+
+        Ellipse result = new Ellipse();
+        result.setFill(color);
+        if (color==GOLDENROD){
+            result.radiusXProperty().bind(Pane.widthProperty().divide(32));
+            result.radiusYProperty().bind(Pane.heightProperty().divide(32));
+        }else {
+            result.radiusXProperty().bind(Pane.widthProperty().divide(16));
+            result.radiusYProperty().bind(Pane.heightProperty().divide(16));
+        }
+        return result;
+    }
     private void start() {
         //заполняем первоначальную таблицу пустыми клетками
         MatrixForGame.fill();
         //рисуем начальную позицию
-        Pane.add(new Circle(45.0, BLACK), 4, 3);
-        Pane.add(new Circle(45.0, BLACK), 3, 4);
-        Pane.add(new Circle(45.0, GRAY), 3, 3);
-        Pane.add(new Circle(45.0, GRAY), 4, 4);
+        Pane.add(createFigure(BLACK), 4, 3);
+        Pane.add(createFigure(BLACK), 3, 4);
+        Pane.add(createFigure(IVORY), 3, 3);
+        Pane.add(createFigure(IVORY), 4, 4);
         //меняем цвет у первоначльных клеток
         game.getTable(false)[4][3].setColor(Unit.Color.Black);
         game.getTable(false)[3][4].setColor(Unit.Color.Black);
@@ -52,6 +72,19 @@ public class Controller {
         Score.setText(String.valueOf(SCORE));
         ScoreForComp.setText(String.valueOf(SCORE_FOR_COMP));
         ScoreForPlayer.setText(String.valueOf(SCORE_FOR_PLAYER));
+    }
+
+    private void restart(){
+        for (int i = 0; i<=7;i++)
+            for (int j = 0; j<=7;j++)
+                Pane.add(createFigure(WHITESMOKE), i, j);
+
+        game = new Game(SCORE, COUNT_FOR_PLAYER, COUNT_FOR_COMP, SCORE_FOR_PLAYER, SCORE_FOR_COMP, matrixTable);
+        turn = true;
+        test = new AI();
+        start();
+        setScore();
+
     }
 
     private void setScore() {
@@ -65,12 +98,12 @@ public class Controller {
         int t = 0;
         if (turn) {
             if (game.checker(column, row, Unit.Color.White, t, game.getTable(false), true)) {
-                Pane.add(new Circle(45.0, GRAY), column, row);
+                Pane.add(createFigure(IVORY), column, row);
                 game.getTable(false)[column][row].setColor(Unit.Color.White);
                 //checker сам меняет цвет вражеских фишек,
                 // поэтому нам нужно пройтись по списку который заполнеяет changer и нарисовать нужные unit'ы
                 while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()) {
-                    Pane.add(new Circle(45.0, GRAY), listOfColumn.get(0), listOfRow.get(0));
+                    Pane.add(createFigure(IVORY), listOfColumn.get(0), listOfRow.get(0));
                     //удаляем первый элемент,тк его уже нарисовали
                     listOfRow.remove(0);
                     listOfColumn.remove(0);
@@ -78,10 +111,10 @@ public class Controller {
 
             }
         } else if (game.checker(column, row, Unit.Color.Black, t, game.getTable(false), true)) {
-            Pane.add(new Circle(45.0, BLACK), column, row);
+            Pane.add(createFigure(BLACK), column, row);
             game.getTable(false)[column][row].setColor(Unit.Color.Black);
             while (!listOfRow.isEmpty() && !listOfColumn.isEmpty()) {
-                Pane.add(new Circle(45.0, BLACK), listOfColumn.get(0), listOfRow.get(0));
+                Pane.add(createFigure(BLACK), listOfColumn.get(0), listOfRow.get(0));
                 listOfRow.remove(0);
                 listOfColumn.remove(0);
             }
@@ -110,6 +143,8 @@ public class Controller {
 
     @FXML
     private GridPane Pane;
+
+
 
     public static final Unit UNMODUNIT = new Unit(Unit.Color.Transparent, 0, -1, -1);
 
@@ -173,7 +208,7 @@ public class Controller {
     private void illuminate() {
         ArrayList<Unit> turnsForPlayer = test.findAllMoves(game, Unit.Color.White);
         for (Unit i : turnsForPlayer) {
-            Pane.add(new Circle(30.0, GOLDENROD), i.getColumn(), i.getRow());
+            Pane.add(createFigure(GOLDENROD), i.getColumn(), i.getRow());
         }
 
     }
@@ -181,7 +216,7 @@ public class Controller {
     private void blur() {
         ArrayList<Unit> turnsForPlayer = test.findAllMoves(game, Unit.Color.White);
         for (Unit i : turnsForPlayer) {
-            Pane.add(new Circle(45.0, WHITESMOKE), i.getColumn(), i.getRow());
+            Pane.add(createFigure(WHITESMOKE), i.getColumn(), i.getRow());
         }
     }
 
@@ -198,7 +233,13 @@ public class Controller {
     @FXML
     void initialize() {
         start();
+        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
+                System.out.println("Height: " + Pane.getHeight() + " Width: " + Pane.getWidth());
+        Pane.widthProperty().addListener(stageSizeListener);
+        Pane.heightProperty().addListener(stageSizeListener);
+
         illuminate();
+
         Pane.setOnMouseClicked(event -> {
             Unit result;
             Unit mid = new Unit(game.getTable(false)[4][4].getColor(), game.getTable(false)[4][4].getScore(), 4, 4);
@@ -222,6 +263,8 @@ public class Controller {
                         alert.setHeaderText("You lose");
                     alert.setContentText("Your Score:"+game.getCountForPlayer()+"\nComp Score:"+game.getCountForComp());
                     alert.showAndWait();
+                    restart();
+                    illuminate();
                 }
             }
         });

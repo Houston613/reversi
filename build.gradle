@@ -30,22 +30,24 @@ test {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
+
 }
 
 apply plugin: "com.github.johnrengelman.shadow"
+
 jar {
     manifest {
-        attributes 'Main-Class': 'view.Main'
+        attributes 'Main-Class': 'view.Launcher'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 application {
-    mainClassName  = 'view.Main'
+    mainClassName  = 'view.Launcher'
 }
 
 javafx{
-    version = '14'
+    version = '11.0.2'
     modules = ['javafx.controls','javafx.fxml']
 }
-mainClassName = 'view.Main'
-
-

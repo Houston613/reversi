@@ -78,7 +78,7 @@ public class AI {
      */
 
     public Unit algorithm(Game game, Unit.Color color, int deep, int alpha, int beta){
-        if (deep==3)
+        if (deep==5)
             //если достигли максимальной глубины, выходим из итерации и
             // передаем результат, показывающий что достигли максимальной глубины
             return Controller.UNMODUNIT;
