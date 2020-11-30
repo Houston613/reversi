@@ -49,10 +49,11 @@ public class Controller {
         result.setFill(color);
         if (color==GOLDENROD){
             result.radiusXProperty().bind(Pane.widthProperty().divide(32));
+            result.centerXProperty().bind(Pane.widthProperty().divide(32));
             result.radiusYProperty().bind(Pane.heightProperty().divide(32));
         }else {
-            result.radiusXProperty().bind(Pane.widthProperty().divide(16));
-            result.radiusYProperty().bind(Pane.heightProperty().divide(16));
+            result.radiusXProperty().bind(Pane.widthProperty().divide(16).subtract(4));
+            result.radiusYProperty().bind(Pane.heightProperty().divide(16).subtract(4));
         }
         return result;
     }
@@ -232,6 +233,7 @@ public class Controller {
 
     @FXML
     void initialize() {
+        GridPane restartPane = Pane;
         start();
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
                 System.out.println("Height: " + Pane.getHeight() + " Width: " + Pane.getWidth());
@@ -264,6 +266,7 @@ public class Controller {
                     alert.setContentText("Your Score:"+game.getCountForPlayer()+"\nComp Score:"+game.getCountForComp());
                     alert.showAndWait();
                     restart();
+                    Pane = restartPane;
                     illuminate();
                 }
             }
