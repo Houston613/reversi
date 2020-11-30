@@ -49,7 +49,6 @@ public class Controller {
         result.setFill(color);
         if (color==GOLDENROD){
             result.radiusXProperty().bind(Pane.widthProperty().divide(32));
-            result.centerXProperty().bind(Pane.widthProperty().divide(32));
             result.radiusYProperty().bind(Pane.heightProperty().divide(32));
         }else {
             result.radiusXProperty().bind(Pane.widthProperty().divide(16).subtract(4));
@@ -76,10 +75,9 @@ public class Controller {
     }
 
     private void restart(){
-        for (int i = 0; i<=7;i++)
-            for (int j = 0; j<=7;j++)
-                Pane.add(createFigure(WHITESMOKE), i, j);
-
+        Pane.setGridLinesVisible(false);
+        Pane.getChildren().clear();
+        Pane.setGridLinesVisible(true);
         game = new Game(SCORE, COUNT_FOR_PLAYER, COUNT_FOR_COMP, SCORE_FOR_PLAYER, SCORE_FOR_COMP, matrixTable);
         turn = true;
         test = new AI();
@@ -266,7 +264,6 @@ public class Controller {
                     alert.setContentText("Your Score:"+game.getCountForPlayer()+"\nComp Score:"+game.getCountForComp());
                     alert.showAndWait();
                     restart();
-                    Pane = restartPane;
                     illuminate();
                 }
             }

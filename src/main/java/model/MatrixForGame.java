@@ -14,6 +14,7 @@ public class MatrixForGame {
         for (int i = 1; i <= 6; i = i+5)
             for (int j = 0; j <= 7; j = j+7)
                 matrixTable[i][j].setScore(-1);
+
         for (int i = 0; i <= 7; i = i+7)
             for (int j = 1; j <= 6; j = j+5)
                 matrixTable[i][j].setScore(-1);
