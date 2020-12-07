@@ -38,7 +38,7 @@ public class Controller {
         turn = !turn;
     }
 
-    private Ellipse createFigure(Color color){
+    private Ellipse createFigure(Color color) {
 
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
                 System.out.println("Height: " + Pane.getHeight() + " Width: " + Pane.getWidth());
@@ -47,15 +47,16 @@ public class Controller {
 
         Ellipse result = new Ellipse();
         result.setFill(color);
-        if (color==GOLDENROD){
+        if (color == GOLDENROD) {
             result.radiusXProperty().bind(Pane.widthProperty().divide(32));
             result.radiusYProperty().bind(Pane.heightProperty().divide(32));
-        }else {
+        } else {
             result.radiusXProperty().bind(Pane.widthProperty().divide(16).subtract(4));
             result.radiusYProperty().bind(Pane.heightProperty().divide(16).subtract(4));
         }
         return result;
     }
+
     private void start() {
         //заполняем первоначальную таблицу пустыми клетками
         MatrixForGame.fill();
@@ -74,7 +75,7 @@ public class Controller {
         ScoreForPlayer.setText(String.valueOf(SCORE_FOR_PLAYER));
     }
 
-    private void restart(){
+    private void restart() {
         Pane.setGridLinesVisible(false);
         Pane.getChildren().clear();
         Pane.setGridLinesVisible(true);
@@ -142,7 +143,6 @@ public class Controller {
 
     @FXML
     private GridPane Pane;
-
 
 
     public static final Unit UNMODUNIT = new Unit(Unit.Color.Transparent, 0, -1, -1);
@@ -225,13 +225,23 @@ public class Controller {
             if (i.getColumn() == column && i.getRow() == row)
                 return true;
         }
-            return false;
+        return false;
     }
 
+    private void endgame() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game is End");
+        if (game.getCountForPlayer() >= game.getCountForComp())
+            alert.setHeaderText("You win");
+        else
+            alert.setHeaderText("You lose");
+        alert.setContentText("Your Score:" + game.getCountForPlayer() + "\nComp Score:" + game.getCountForComp());
+        alert.showAndWait();
+        restart();
+    }
 
     @FXML
     void initialize() {
-        GridPane restartPane = Pane;
         start();
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) ->
                 System.out.println("Height: " + Pane.getHeight() + " Width: " + Pane.getWidth());
@@ -241,31 +251,41 @@ public class Controller {
         illuminate();
 
         Pane.setOnMouseClicked(event -> {
+
             Unit result;
             Unit mid = new Unit(game.getTable(false)[4][4].getColor(), game.getTable(false)[4][4].getScore(), 4, 4);
             double xCoord = event.getSceneX();
             double yCoord = event.getSceneY();
             result = mouseHandler(mid, xCoord, yCoord, 2, 2);
-            if (checkValidClick(result.getColumn(),result.getRow())) {
+
+            if (checkValidClick(result.getColumn(), result.getRow())) {
                 blur();
                 addUnit(result.getColumn(), result.getRow(), turn);
                 result = test.algorithm(game, Unit.Color.Black, 0, -1, 100);
                 if (result != null) {
                     addUnit(result.getColumn(), result.getRow(), turn);
                     test.setToDefault();
-                    illuminate();
-                }else {
+                } else if (!test.findAllMoves(game, Unit.Color.Black).isEmpty()) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game is End");
-                    if (game.getCountForPlayer()>=game.getCountForComp())
-                        alert.setHeaderText("You win");
-                    else
-                        alert.setHeaderText("You lose");
-                    alert.setContentText("Your Score:"+game.getCountForPlayer()+"\nComp Score:"+game.getCountForComp());
+                    alert.setTitle("Change turn");
+                    alert.setHeaderText("White has no moves. Black again.");
                     alert.showAndWait();
-                    restart();
-                    illuminate();
+                    addUnit(test.findAllMoves(game, Unit.Color.Black).get(0).getColumn(),
+                            test.findAllMoves(game, Unit.Color.Black).get(0).getRow(), turn);
+                    test.setToDefault();
+                } else if (test.findAllMoves(game, Unit.Color.Black).isEmpty()) {
+                    if (test.findAllMoves(game, Unit.Color.White).isEmpty()) {
+                        endgame();
+                    } else {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Change turn");
+                        alert.setHeaderText("Black has no moves. Go again.");
+                        alert.showAndWait();
+                    }
+                } else {
+                    endgame();
                 }
+                illuminate();
             }
         });
 
